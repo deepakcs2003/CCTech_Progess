@@ -1,0 +1,787 @@
+1. What is C++ Standard Library?
+✔ Definition
+
+The C++ Standard Library is a collection of:
+
+Classes
+
+Functions
+
+Templates
+
+Algorithms
+
+Containers
+
+These are provided in addition to the core C++ language.
+
+Core language = variables, loops, classes, pointers, etc.
+Standard Library = ready-made powerful tools.
+
+🔵 2. Important C++ Standard Library Components
+
+From transcript:
+
+Already studied:
+
+iostream
+
+fstream
+
+string
+
+exception
+
+Very Important Part:
+⭐ STL (Standard Template Library)
+
+STL includes:
+
+Containers
+
+Iterators
+
+Algorithms
+
+Function objects (Functors)
+
+Numeric utilities
+
+🔵 3. Containers in C++ (Very Important)
+
+In C, we had only arrays.
+
+In C++, we have ready-made containers:
+
+Container	Purpose
+vector	Dynamic array
+list	Doubly linked list
+stack	LIFO
+queue	FIFO
+priority_queue	Heap
+set	Unique sorted values
+map	Key-value pair
+unordered_map	Hash map
+✅ Example 1: vector
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    vector<int> v = {1, 2, 3, 4};
+
+    v.push_back(5);
+
+    for(int i = 0; i < v.size(); i++) {
+        cout << v[i] << " ";
+    }
+}
+✅ Example 2: stack
+#include <iostream>
+#include <stack>
+using namespace std;
+
+int main() {
+    stack<int> s;
+
+    s.push(10);
+    s.push(20);
+
+    cout << s.top() << endl;  // 20
+
+    s.pop();
+
+    cout << s.top();          // 10
+}
+
+👉 Notice: We did NOT implement stack manually.
+
+🔵 4. What is Special in C++ STL?
+
+STL is based on:
+
+⭐ Generic Programming
+🔵 5. What is Generic Programming?
+Definition:
+
+Generic programming means:
+
+Write code that works for many data types and many containers.
+
+Instead of writing separate code for:
+
+vector<int>
+
+vector<double>
+
+list<int>
+
+set<string>
+
+We write ONE generic algorithm.
+
+🔵 6. Why Generic Programming?
+
+Common tasks in all programs:
+
+Add data
+
+Remove data
+
+Search data
+
+Sort data
+
+Copy data
+
+Sum elements
+
+These tasks are common for:
+
+vector
+
+list
+
+set
+
+array
+
+So why write separate code every time?
+
+Generic programming solves this.
+
+🔵 7. Example: Sum of Array (Concrete Version)
+int sum(int arr[], int n) {
+    int s = 0;
+    for(int i = 0; i < n; i++) {
+        s += arr[i];
+    }
+    return s;
+}
+
+Works only for:
+
+Array
+
+int
+
+Not generic ❌
+
+🔵 8. Generic Version Using Templates
+template <typename T>
+T sum(T arr[], int n) {
+    T s = 0;
+    for(int i = 0; i < n; i++) {
+        s += arr[i];
+    }
+    return s;
+}
+
+Now works for:
+
+int
+
+double
+
+float
+
+Better ✅
+
+But still only for array ❌
+
+🔵 9. Problem: What About List or Vector?
+
+Array traversal:
+
+arr[i]
+
+List traversal:
+
+node->next
+
+Different logic.
+
+So how to generalize?
+
+🔵 10. Solution: ITERATORS 🔥
+What is Iterator?
+
+Iterator is like a smart pointer that:
+
+Points to element
+
+Moves to next element
+
+Checks end
+
+Gets value
+
+Basic Iterator Operations:
+Operator	Meaning
+++it	Move to next
+*it	Get value
+it != end	Check not finished
+🔵 11. Generic Sum Using Iterators
+#include <iostream>
+using namespace std;
+
+template <typename Iterator, typename T>
+T sum(Iterator first, Iterator last) {
+    T s = 0;
+
+    while(first != last) {
+        s += *first;
+        ++first;
+    }
+
+    return s;
+}
+
+🔥 This works for:
+
+vector
+
+list
+
+set
+
+array
+
+🔵 12. Using Generic Sum
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    vector<int> v = {1,2,3,4,5};
+
+    int result = sum<vector<int>::iterator, int>(v.begin(), v.end());
+
+    cout << result;
+}
+🔵 13. Real Power: STL Algorithms
+
+C++ gives ready-made algorithms:
+
+find()
+
+sort()
+
+copy()
+
+count()
+
+for_each()
+
+accumulate()
+
+✅ Example: find()
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    vector<int> v = {10, 20, 30, 40};
+
+    auto it = find(v.begin(), v.end(), 30);
+
+    if(it != v.end())
+        cout << "Found";
+}
+
+Works for:
+
+vector
+
+list
+
+set
+
+Same code 🔥
+
+🔵 14. How STL Removes 600 Implementations
+
+Without STL:
+
+If we have:
+
+10 containers
+
+60 algorithms
+
+We need:
+
+10 × 60 = 600 implementations
+
+With iterators:
+
+Algorithms written once
+
+Containers provide iterator
+
+Problem solved ✅
+
+🔵 15. STL Model (Important Diagram Concept)
+
+STL has 3 Parts:
+
+Containers  <----->  Iterators  <----->  Algorithms
+
+Containers store data
+
+Iterators provide access
+
+Algorithms operate using iterators
+
+🔵 16. Example: Same Find Code for Different Containers
+#include <iostream>
+#include <list>
+#include <set>
+#include <algorithm>
+using namespace std;
+
+int main() {
+
+    list<string> l = {"apple", "banana", "cherry"};
+    auto it1 = find(l.begin(), l.end(), "banana");
+
+    set<int> s = {5, 10, 15};
+    auto it2 = find(s.begin(), s.end(), 10);
+
+    if(it1 != l.end())
+        cout << "Found in list\n";
+
+    if(it2 != s.end())
+        cout << "Found in set\n";
+}
+
+Same algorithm. Different containers.
+That is Generic Programming.
+
+🔵 17. Predicate & Functor (From Transcript)
+
+Sometimes we don’t want simple equality.
+
+We want condition-based search.
+
+Example:
+
+Find first number greater than 50.
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+bool greaterThan50(int x) {
+    return x > 50;
+}
+
+int main() {
+    vector<int> v = {10, 60, 30, 80};
+
+    auto it = find_if(v.begin(), v.end(), greaterThan50);
+
+    if(it != v.end())
+        cout << *it;
+}
+
+Here:
+
+greaterThan50 is predicate
+
+find_if uses it
+
+This is advanced generic programming.
+
+🔵 18. Important Rules of C++ Headers
+
+From transcript:
+
+✔ C++ headers DO NOT have .h
+
+Correct:
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+Wrong:
+
+#include <iostream.h> ❌
+🔵 19. Namespace std
+
+All standard library components are inside:
+
+std::
+
+Example:
+
+std::vector<int>
+std::cout
+std::find
+
+Or use:
+
+using namespace std;
+
+1. What is STL in C++?
+✅ STL = Standard Template Library
+
+It is part of ISO C++ Standard Library.
+
+STL has 4 Main Components:
+
+Containers
+
+Iterators
+
+Algorithms
+
+Function Objects (Functors / Predicates)
+
+These 4 together make generic programming powerful in C++.
+
+🔷 2. Philosophy of STL (Very Important Concept)
+🎯 Core Idea:
+
+Separate container and algorithm
+
+Instead of writing algorithm for each data structure separately:
+
+❌ Bad approach:
+
+Write sort for array
+
+Write sort for list
+
+Write sort for vector
+
+✅ STL approach:
+
+Write algorithm once
+
+It works with ANY container
+
+Containers communicate with algorithms using iterators
+
+🔷 3. What is an Iterator?
+
+Iterator acts like a pointer.
+
+It provides 3 main operations:
+
+++ → move to next element
+
+* → access value
+
+!= → compare iterators
+
+✅ Example: Manual Find Algorithm Using Iterators
+#include <iostream>
+#include <vector>
+using namespace std;
+
+template <typename Iterator, typename T>
+Iterator myFind(Iterator first, Iterator last, const T& value) {
+    while (first != last) {
+        if (*first == value)
+            return first;
+        ++first;
+    }
+    return last;
+}
+
+int main() {
+    vector<int> v = {10, 20, 30, 40};
+
+    auto it = myFind(v.begin(), v.end(), 30);
+
+    if (it != v.end())
+        cout << "Found: " << *it;
+    else
+        cout << "Not Found";
+}
+🔥 Why Powerful?
+
+This works for:
+
+vector
+
+list
+
+set
+
+any container with iterators
+
+🔷 4. Generic Programming
+
+Generic programming uses:
+
+Templates
+
+Type deduction
+
+Iterators
+
+Function objects
+
+It allows writing flexible code.
+
+🔷 5. Predicate Version of Find (Policy Parameterization)
+
+Instead of searching value,
+we search using condition.
+
+Example: Find first odd number.
+
+✅ Using Function Object (Functor)
+#include <iostream>
+#include <vector>
+using namespace std;
+
+struct IsOdd {
+    bool operator()(int x) {
+        return x % 2 != 0;
+    }
+};
+
+int main() {
+    vector<int> v = {2, 4, 6, 7, 8};
+
+    auto it = find_if(v.begin(), v.end(), IsOdd());
+
+    if (it != v.end())
+        cout << "First odd: " << *it;
+}
+✅ Using Lambda (Modern C++11)
+auto it = find_if(v.begin(), v.end(),
+                  [](int x) { return x % 2 != 0; });
+🔥 This is called:
+
+Policy Parameterization
+
+Algorithm same.
+Only condition changes.
+
+🔷 6. Sorting with Custom Policy
+
+Suppose we have a Record:
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+struct Record {
+    string name;
+    string address;
+};
+✅ Sort by Name
+int main() {
+    vector<Record> v = {
+        {"Deepak", "Mumbai"},
+        {"Aman", "Delhi"},
+        {"Ravi", "Pune"}
+    };
+
+    sort(v.begin(), v.end(),
+         [](const Record& a, const Record& b) {
+             return a.name < b.name;
+         });
+
+    for (auto &r : v)
+        cout << r.name << " ";
+}
+🔥 Important Concept
+
+sort() doesn’t know:
+
+What is Record
+
+What is name
+
+It just uses:
+
+Iterators
+
+Comparison policy
+
+That is STL power.
+
+🔷 7. Containers Overview
+
+Now we study main containers.
+
+🔷 8. VECTOR
+📌 Characteristics:
+
+Dynamic array
+
+Contiguous memory
+
+Fast random access
+
+Insert/delete at back efficient
+
+Insert in middle expensive
+
+Basic Vector Structure
+vector<int> v;
+Common Member Functions
+Function	Purpose
+begin()	start iterator
+end()	one past last
+insert()	insert element
+erase()	remove element
+size()	number of elements
+✅ Example: Insert and Erase
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    vector<int> v = {1,2,3,4};
+
+    auto p = v.begin() + 2;
+
+    v.insert(p, 99);   // insert before 3
+
+    for(int x : v)
+        cout << x << " ";
+
+    cout << endl;
+
+    v.erase(v.begin() + 2);
+
+    for(int x : v)
+        cout << x << " ";
+}
+⚠ Important: Iterator Invalidation
+
+In vector:
+
+Insert may invalidate other iterators
+
+Erase may invalidate other iterators
+
+Because elements shift.
+
+🔷 9. Traversing Vector
+Method 1: Using Index
+for (vector<int>::size_type i = 0; i < v.size(); i++)
+    cout << v[i];
+Method 2: Using Iterator (Preferred)
+for (auto it = v.begin(); it != v.end(); ++it)
+    cout << *it;
+Method 3: Range Based Loop (C++11)
+for (auto &x : v)
+    cout << x;
+
+🔥 Most modern and clean.
+
+🔷 10. LIST (Doubly Linked List)
+📌 Characteristics:
+
+Non-contiguous memory
+
+Fast insert/delete anywhere
+
+No random access
+
+Example:
+#include <iostream>
+#include <list>
+using namespace std;
+
+int main() {
+    list<int> l = {1,2,3,4};
+
+    auto p = l.begin();
+    ++p;
+
+    l.insert(p, 99);
+
+    for(int x : l)
+        cout << x << " ";
+}
+🔥 Important Difference from Vector
+Operation	Vector	List
+Insert middle	Costly	Fast
+Random access	Yes	No
+Iterator invalidation	Yes	No (usually safe)
+🔷 11. MAP
+📌 Characteristics:
+
+Key → Value pair
+
+Ordered
+
+Implemented as balanced binary tree
+
+Unique keys
+
+Declaration
+map<char, int> m;
+Insert Methods
+Method 1: Using []
+m['a'] = 10;
+Method 2: Using insert()
+m.insert({'b', 20});
+Traversing Map
+for (auto &p : m)
+    cout << p.first << " -> " << p.second << endl;
+Find in Map
+auto it = m.find('a');
+
+if (it != m.end())
+    cout << it->second;
+🔷 12. Real Example: Word Frequency Counter
+#include <iostream>
+#include <map>
+using namespace std;
+
+int main() {
+    map<string, int> freq;
+    string word;
+
+    while (cin >> word)
+        freq[word]++;
+
+    for (auto &p : freq)
+        cout << p.first << " : " << p.second << endl;
+}
+
+🔥 Very common interview problem.
+
+🔷 13. SET
+📌 Characteristics:
+
+Stores unique elements
+
+Ordered
+
+Balanced tree
+
+Example
+#include <iostream>
+#include <set>
+using namespace std;
+
+int main() {
+    set<int> s;
+
+    s.insert(10);
+    s.insert(5);
+    s.insert(10); // duplicate ignored
+
+    for (auto x : s)
+        cout << x << " ";
+}
+🔷 14. Summary of Container Comparison
+Feature	vector	list	map	set
+Random Access	Yes	No	No	No
+Insert Middle	Slow	Fast	Fast	Fast
+Unique Keys	No	No	Yes	Yes
+Key-Value	No	No	Yes	No
