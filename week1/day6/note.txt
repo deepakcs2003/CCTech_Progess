@@ -1,0 +1,608 @@
+🔹 PART 1: DEFAULT PARAMETERS IN C++
+✅ 1. What is a Default Parameter?
+🔹 Definition:
+
+A default parameter is a function parameter that has a predefined value.
+If the caller does not pass that argument, the default value is used automatically.
+
+🔹 Syntax:
+return_type function_name(type parameter = default_value);
+✅ 2. Why Default Parameters Are Needed?
+
+Imagine a function has many parameters but most of them usually have the same values.
+
+Instead of writing all arguments every time:
+
+createWindow(a, b, c, d, e, f, g, h, i, j, k);
+
+We can assign default values to less frequently changed parameters.
+
+This:
+
+Reduces code repetition
+
+Improves readability
+
+Makes API easy to use
+
+Makes program flexible
+
+✅ 3. Basic Example
+#include <iostream>
+using namespace std;
+
+void show(int a = 10) {
+    cout << "Value of a: " << a << endl;
+}
+
+int main() {
+    show(5);  // a = 5
+    show();   // a = 10 (default)
+}
+🔹 Output:
+Value of a: 5
+Value of a: 10
+✅ 4. Multiple Default Parameters
+#include <iostream>
+using namespace std;
+
+void display(int a = 10, int b = 20) {
+    cout << "a: " << a << " b: " << b << endl;
+}
+
+int main() {
+    display(5, 6);  // a=5 b=6
+    display(5);     // a=5 b=20
+    display();      // a=10 b=20
+}
+⚠️ Important Rule (VERY IMPORTANT)
+🔴 Rule:
+
+Default parameters must be from right to left.
+
+Correct:
+
+void fun(int a, int b = 5, int c = 10);
+
+Wrong:
+
+void fun(int a = 5, int b); ❌ NOT ALLOWED
+❓ Why?
+
+Because C++ matches arguments by position, not by name.
+
+✅ 5. Default Parameters Must Be Declared Once
+
+Default values should be given in the function declaration (prototype), not in definition.
+
+✔ Correct Way:
+// header or declaration
+void greet(string name = "User");
+
+// definition
+void greet(string name) {
+    cout << "Hello " << name << endl;
+}
+❌ Wrong:
+void greet(string name = "User");
+void greet(string name = "Guest"); // ❌ ERROR
+
+You cannot redefine default values.
+
+✅ 6. Calling Rules
+
+If function has:
+
+void g(int a, double b = 0.0, char c = 'x');
+
+Valid Calls:
+
+g(5);
+g(5, 2.3);
+g(5, 2.3, 'A');
+
+Invalid:
+
+g(); ❌ (a has no default)
+✅ 7. Default Arguments Can Be Expressions
+int square(int x = 5 * 2) {
+    return x * x;
+}
+🔹 PART 2: FUNCTION OVERLOADING
+✅ 1. What is Function Overloading?
+🔹 Definition:
+
+Function overloading means:
+
+Same function name but different parameter list.
+
+It is an example of Static Polymorphism.
+
+✅ 2. Why Overloading?
+
+Suppose you want to add numbers of different types:
+
+Instead of:
+
+addInt()
+addDouble()
+addFloat()
+
+You can write:
+
+add()
+
+With different parameters.
+
+✅ 3. Basic Example
+#include <iostream>
+using namespace std;
+
+int add(int a, int b) {
+    return a + b;
+}
+
+double add(double a, double b) {
+    return a + b;
+}
+
+int main() {
+    cout << add(5, 6) << endl;       // int version
+    cout << add(5.5, 6.5) << endl;   // double version
+}
+✅ 4. Overloading Based on Number of Parameters
+int area(int side) {          // square
+    return side * side;
+}
+
+int area(int length, int width) {   // rectangle
+    return length * width;
+}
+❌ Important Rule: Return Type Alone Cannot Differentiate
+
+Wrong:
+
+int area(int a);
+double area(int a);  ❌ ERROR
+
+Because:
+C++ decides function using parameters only, NOT return type.
+
+🔹 PART 3: OVERLOAD RESOLUTION (Very Important Concept)
+
+When multiple overloaded functions exist, compiler decides which one to call.
+
+This process is called:
+
+🔥 Overload Resolution
+Step 1: Candidate Functions
+
+All functions with same name.
+
+Step 2: Viable Functions
+
+Functions matching:
+
+Number of arguments
+
+Can accept given arguments
+
+Step 3: Best Match Selection
+
+Priority Order:
+
+1️⃣ Exact Match
+2️⃣ Promotion
+3️⃣ Standard Conversion
+4️⃣ User Defined Conversion
+
+✅ Example 1: Exact Match
+void f(int x) {
+    cout << "Int version\n";
+}
+
+void f(double x) {
+    cout << "Double version\n";
+}
+
+int main() {
+    f(5);     // int version (exact)
+    f(5.6);   // double version (exact)
+}
+✅ Example 2: Promotion
+void f(int x) {
+    cout << "Int version\n";
+}
+
+void f(double x) {
+    cout << "Double version\n";
+}
+
+int main() {
+    char ch = 'A';
+    f(ch);   // promoted to int
+}
+✅ Example 3: Ambiguity
+void fun(int a, double b) {
+    cout << "Function 1\n";
+}
+
+void fun(double a, int b) {
+    cout << "Function 2\n";
+}
+
+int main() {
+    fun(5, 5);  // ❌ Ambiguous
+}
+
+Compiler cannot decide best match.
+
+🔹 PART 4: Default Parameters + Overloading Together
+Example:
+void area(int a, int b = 10) {
+    cout << "First function\n";
+}
+
+void area(double a) {
+    cout << "Second function\n";
+}
+
+int main() {
+    area(5);     // First function
+    area(5.5);   // Second function
+}
+⚠️ Dangerous Case (Ambiguity)
+void test(int a = 10);
+void test(double a = 20.5);
+
+int main() {
+    test();  // ❌ Ambiguous
+}
+
+Compiler confused — both can be called with zero arguments.
+
+🔥 STATIC POLYMORPHISM
+Meaning:
+
+Poly = Many
+Morphism = Forms
+
+Same function name → many forms.
+
+Called static because:
+✔ Decided at compile time
+✔ No runtime overhead
+
+
+
+1️⃣ Operators vs Functions (Fundamental Question)
+❓ Both operators and functions:
+
+Take inputs (operands / parameters)
+
+Perform computation
+
+Return a result
+
+Then why are they different?
+
+🔹 Difference #1: Notation
+✅ Operators
+
+Written in:
+
+Infix → a + b
+
+Prefix → ++a
+
+Postfix → a++
+
+✅ Functions
+
+Always written in prefix notation:
+
+multiply(a, b);
+🔹 Difference #2: Number of Operands
+Feature	Operator	Function
+Operands	1, 2 (mostly), one ternary	Any number
+Return	Always 1 value	May return 1 or void
+Evaluation	Based on precedence & associativity	Based on nesting depth
+🔹 Example
+Multiplication using function
+int multiply(int x, int y) {
+    int product = 0;
+    for(int i = 0; i < y; i++) {
+        product += x;
+    }
+    return product;
+}
+Using operator
+int result = x * y;
+
+Both compute same result
+But syntax and evaluation rules differ.
+
+2️⃣ Operator Functions in C++
+
+C++ introduces a keyword:
+
+operator
+
+Every operator internally behaves like a function.
+
+Example:
+
+a + b;
+
+Internally becomes:
+
+operator+(a, b);
+Expression Example
+c = a + b;
+
+Internally:
+
+operator=(c, operator+(a, b));
+
+👉 Inner operator evaluated first (like nested functions).
+
+3️⃣ What is Operator Overloading?
+🔹 Definition
+
+Giving a new meaning to an existing operator for user-defined types.
+
+Also called:
+
+🔹 Ad-hoc Polymorphism
+
+Important Rule
+
+✔ You CANNOT overload operators for built-in types
+✔ You CAN overload operators for:
+
+class
+
+struct
+
+enum
+
+4️⃣ Why Operator Overloading? (Advantage)
+
+It provides:
+
+🎯 Syntactic Sugar
+
+Your code looks like mathematics.
+
+Without overloading:
+
+add(a, multiply(b, c));
+
+With overloading:
+
+a + b * c;
+
+Much cleaner.
+
+5️⃣ Example 1 – String Concatenation
+Basic Syntax of Operator Overloading
+
+General form:
+
+ReturnType operatorSymbol(parameters)
+{
+    // logic
+}
+
+Example for + :
+
+ReturnType operator+(parameters)
+Let’s create our own simple String class.
+#include <iostream>
+#include <string>
+using namespace std;
+
+class MyString {
+    string str;   // Modern C++ string
+
+public:
+    // Constructor
+    MyString(string s = "") : str(s) {}
+
+    // Operator overloading
+    MyString operator+(const MyString& other) const {
+        return MyString(str + other.str);
+    }
+
+    void display() const {
+        cout << str << endl;
+    }
+};
+
+int main() {
+    MyString first("Deepak ");
+    MyString last("Vishwakarma");
+
+    MyString full = first + last;
+    full.display();
+}
+🔹 Why parameters are const &?
+
+Avoid copying large objects
+
+Prevent modification
+
+🔹 Why return by value?
+
+Because a new object is created
+
+6️⃣ Example 2 – Enum Modular Addition
+
+Normally:
+
+enum E {C0, C1, C2};
+
+Adding:
+
+C1 + C2  // becomes 1 + 2 = 3 (integer addition)
+
+Now we overload to make addition modulo 3.
+
+#include <iostream>
+using namespace std;
+
+enum E {C0, C1, C2};
+
+E operator+(const E& a, const E& b) {
+    int result = (a + b) % 3;
+    return static_cast<E>(result);
+}
+
+int main() {
+    E a = C1;
+    E b = C2;
+
+    E x = a + b;   // Calls overloaded version
+
+    cout << x << endl;  // Output: 0
+}
+
+Now:
+
+1 + 2 = 3
+3 % 3 = 0
+
+So output = C0
+
+7️⃣ Rules of Operator Overloading
+🚫 Rule 1: Cannot Create New Operators
+
+❌ Not allowed:
+
+operator**
+operator<>
+
+Only predefined operators allowed.
+
+🚫 Rule 2: Cannot Change Intrinsic Properties
+
+You cannot change:
+
+1. Arity
+
+Number of operands
+Example:
+
++ must stay binary
+
+++ must stay unary
+
+2. Precedence
+
+You cannot change priority level.
+
+3. Associativity
+
+Left-to-right or right-to-left cannot change.
+
+8️⃣ Prefix vs Postfix Overloading
+Prefix:
+++a;
+ClassName operator++();
+Postfix:
+a++;
+ClassName operator++(int);
+
+The int is dummy to differentiate.
+
+Example
+#include <iostream>
+using namespace std;
+
+class Counter {
+    int value;
+
+public:
+    Counter(int v = 0) : value(v) {}
+
+    // Prefix
+    Counter operator++() {
+        ++value;
+        return *this;
+    }
+
+    // Postfix
+    Counter operator++(int) {
+        Counter temp = *this;
+        value++;
+        return temp;
+    }
+
+    void display() {
+        cout << value << endl;
+    }
+};
+
+int main() {
+    Counter c(5);
+
+    ++c;   // prefix
+    c.display();  // 6
+
+    c++;   // postfix
+    c.display();  // 7
+}
+9️⃣ Operators That Cannot Be Overloaded
+
+These are forbidden:
+
+.
+.*
+::
+?:
+sizeof
+
+Also:
+
+logical && and || lose short-circuiting if overloaded
+
+comma operator loses sequencing behavior
+
+address-of & cannot be overloaded in some contexts
+
+🔟 Short-Circuit Behavior Loss
+
+Normal:
+
+if(a && b)
+
+If a is false → b is NOT evaluated.
+
+If overloaded → both evaluated
+Short-circuit lost.
+
+1️⃣1️⃣ Disadvantages of Overloading
+⚠ Semantic Confusion
+
+Example:
+
+<<
+
+Bit shift
+
+Stream insertion
+
+Same operator, different meaning.
+
+⚠ Mathematical Property Violation
+
+Addition is normally commutative:
+
+a + b == b + a
+
+But string concatenation:
+
+"run" + "time" != "time" + "run"
+
+So careful design required.
+
