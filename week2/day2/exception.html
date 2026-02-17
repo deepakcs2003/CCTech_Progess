@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Error Handling & Exceptions - Complete Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        h2 {
+            color: #1e3c72;
+            font-size: 2em;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        h3 {
+            color: #2a5298;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+            padding-left: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        h4 {
+            color: #444;
+            font-size: 1.2em;
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            margin: 15px 0;
+            text-align: justify;
+        }
+
+        .highlight-box {
+            background: #f0f4ff;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .important-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .danger-box {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        pre {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.5;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            color: #e83e8c;
+            font-size: 0.9em;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            color: #abb2bf;
+        }
+
+        .keyword {
+            color: #c678dd;
+            font-weight: bold;
+        }
+
+        .string {
+            color: #98c379;
+        }
+
+        .comment {
+            color: #5c6370;
+            font-style: italic;
+        }
+
+        .function {
+            color: #61afef;
+        }
+
+        .number {
+            color: #d19a66;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .flow-diagram {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            text-align: center;
+            font-family: monospace;
+            border: 2px solid #667eea;
+        }
+
+        .flow-step {
+            background: white;
+            padding: 10px 20px;
+            margin: 10px auto;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+        }
+
+        .arrow {
+            color: #667eea;
+            font-size: 1.5em;
+            margin: 5px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin: 5px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #28a745;
+        }
+
+        .badge-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .badge-danger {
+            background: #dc3545;
+        }
+
+        .resources {
+            background: #f8f9fa;
+            padding: 30px;
+            margin: 40px 0 0 0;
+            border-radius: 10px;
+        }
+
+        .resources h3 {
+            border-left: none;
+            padding-left: 0;
+            margin-bottom: 20px;
+        }
+
+        .resources ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .resources li {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .resources li:hover {
+            transform: translateX(5px);
+        }
+
+        .resources a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .resources a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background: #1e3c72;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            pre {
+                font-size: 0.85em;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔧 C++ Error Handling & Exceptions</h1>
+            <p>Module 36 - Complete Guide with Examples</p>
+        </header>
+
+        <div class="content">
+            <!-- Section 1: Error vs Exception -->
+            <h2>1️⃣ Error vs Exception - Fundamental Concept</h2>
+            
+            <h3>🔹 What is an Error?</h3>
+            <div class="highlight-box">
+                <p><strong>Errors</strong> are typically caused by programmer mistakes and represent logical issues in the code.</p>
+                <ul>
+                    <li><strong>Logical mistakes</strong> - Wrong algorithm implementation</li>
+                    <li><strong>Invalid assumptions</strong> - Incorrect program logic</li>
+                    <li><strong>Programming bugs</strong> - Preventable issues</li>
+                </ul>
+            </div>
+
+            <p><strong>Common Examples:</strong></p>
+            <ul>
+                <li>Popping from an empty stack</li>
+                <li>Accessing array out of bounds</li>
+                <li>Wrong conditions in loops</li>
+                <li>Off-by-one errors</li>
+            </ul>
+
+            <h3>🔹 What is an Exception?</h3>
+            <div class="important-box">
+                <p><strong>Exceptions</strong> are unexpected, rare situations often outside the programmer's complete control that may crash the system.</p>
+                <ul>
+                    <li><strong>Unpredictable</strong> - Cannot always be prevented</li>
+                    <li><strong>Runtime issues</strong> - Occur during program execution</li>
+                    <li><strong>External factors</strong> - May depend on system state</li>
+                </ul>
+            </div>
+
+            <p><strong>Common Causes:</strong></p>
+            <ul>
+                <li>Memory allocation failure</li>
+                <li>Divide by zero operations</li>
+                <li>File not found</li>
+                <li>Network failures</li>
+                <li>Hardware interrupts</li>
+            </ul>
+
+            <h3>🔹 Key Differences</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Error</th>
+                        <th>Exception</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Programmer mistake</td>
+                        <td>Unexpected situation</td>
+                    </tr>
+                    <tr>
+                        <td>Frequent occurrence</td>
+                        <td>Infrequent/rare</td>
+                    </tr>
+                    <tr>
+                        <td>Logical issue</td>
+                        <td>Runtime abnormal event</td>
+                    </tr>
+                    <tr>
+                        <td>Preventable with proper coding</td>
+                        <td>May be outside programmer control</td>
+                    </tr>
+                    <tr>
+                        <td>Should be fixed in code</td>
+                        <td>Should be handled gracefully</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Section 2: Causes of Exceptions -->
+            <h2>2️⃣ Causes of Exceptions in C++</h2>
+
+            <h3>🔹 (1) Unexpected System State</h3>
+            <p>System resources become unavailable or exhausted.</p>
+            <ul>
+                <li>Memory full (heap exhausted)</li>
+                <li>Disk full</li>
+                <li>Stack overflow</li>
+            </ul>
+
+            <h4>Example: Memory Allocation Failure</h4>
+            <pre><code><span class="comment">// Attempting huge memory allocation</span>
+<span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        <span class="comment">// Trying to allocate unreasonably large memory</span>
+        <span class="keyword">int</span>* ptr = <span class="keyword">new int</span>[<span class="number">1000000000000</span>];
+    }
+    <span class="keyword">catch</span> (bad_alloc& e) {
+        cout &lt;&lt; <span class="string">"Memory allocation failed!\n"</span>;
+        cout &lt;&lt; <span class="string">"Error: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <div class="success-box">
+                <p>✔ <code>bad_alloc</code> is automatically thrown by C++ when memory allocation fails.</p>
+            </div>
+
+            <h3>🔹 (2) External Events</h3>
+            <p>Events originating outside the program's normal flow.</p>
+            <ul>
+                <li>CTRL + C (user interruption)</li>
+                <li>Operating system signals</li>
+                <li>Network socket failures</li>
+                <li>Hardware interrupts</li>
+            </ul>
+
+            <div class="highlight-box">
+                <p><strong>Note:</strong> In C++, we typically don't handle raw OS signals directly for application logic. Instead, we use structured exception handling (try-catch blocks).</p>
+            </div>
+
+            <h3>🔹 (3) Logical Errors</h3>
+            <p>Programming logic that leads to invalid operations.</p>
+
+            <h4>Example: Division by Zero</h4>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdexcept&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> <span class="function">divide</span>(<span class="keyword">int</span> a, <span class="keyword">int</span> b) {
+    <span class="keyword">if</span> (b == <span class="number">0</span>)
+        <span class="keyword">throw</span> <span class="function">runtime_error</span>(<span class="string">"Divide by zero error!"</span>);
+    <span class="keyword">return</span> a / b;
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        cout &lt;&lt; <span class="string">"Result: "</span> &lt;&lt; <span class="function">divide</span>(<span class="number">10</span>, <span class="number">0</span>) &lt;&lt; endl;
+    }
+    <span class="keyword">catch</span> (exception& e) {
+        cout &lt;&lt; <span class="string">"Exception caught: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <h3>🔹 (4) Resource Errors</h3>
+            <p>Problems accessing or managing system resources.</p>
+
+            <h4>Example: File Not Found</h4>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;fstream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdexcept&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        ifstream file(<span class="string">"nonexistent.txt"</span>);
+        
+        <span class="keyword">if</span> (!file)
+            <span class="keyword">throw</span> <span class="function">runtime_error</span>(<span class="string">"File not found!"</span>);
+        
+        <span class="comment">// Process file...</span>
+        file.<span class="function">close</span>();
+    }
+    <span class="keyword">catch</span> (exception& e) {
+        cout &lt;&lt; <span class="string">"Error: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <h3>🔹 (5) Runtime Errors</h3>
+            <p>Errors that occur during program execution.</p>
+
+            <h4>Example: Vector Out of Range</h4>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;vector&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        vector&lt;<span class="keyword">int</span>&gt; v = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>};
+        
+        <span class="comment">// This will throw out_of_range exception</span>
+        cout &lt;&lt; v.<span class="function">at</span>(<span class="number">10</span>) &lt;&lt; endl;
+    }
+    <span class="keyword">catch</span> (exception& e) {
+        cout &lt;&lt; <span class="string">"Exception: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <div class="success-box">
+                <p>✔ Using <code>.at()</code> instead of <code>[]</code> provides bounds checking and throws exceptions for invalid indices.</p>
+            </div>
+
+            <!-- Section 3: Normal Flow vs Exception Flow -->
+            <h2>3️⃣ Normal Flow vs Exception Flow</h2>
+
+            <div class="important-box">
+                <h4>🔥 Key Concept</h4>
+                <p><strong>In C:</strong> Normal logic and error handling are mixed together.</p>
+                <p><strong>In C++:</strong> Normal logic and error handling are completely separated.</p>
+            </div>
+
+            <h3>Normal Code Flow</h3>
+            <pre><code><span class="comment">// Regular operations</span>
+<span class="keyword">int</span> result = a + b;
+<span class="keyword">int</span> product = x * y;
+<span class="function">processData</span>(result);</code></pre>
+
+            <h3>Exception Flow</h3>
+            <pre><code><span class="keyword">try</span> {
+    <span class="comment">// Normal operations that might fail</span>
+    <span class="function">riskyOperation</span>();
+    <span class="function">anotherOperation</span>();
+}
+<span class="keyword">catch</span> (...) {
+    <span class="comment">// Error handling logic</span>
+    <span class="function">handleError</span>();
+}</code></pre>
+
+            <div class="success-box">
+                <p><strong>Benefits of Separation:</strong></p>
+                <ul>
+                    <li>✔ Cleaner, more readable code</li>
+                    <li>✔ Normal logic is not cluttered with error checks</li>
+                    <li>✔ Centralized error handling</li>
+                    <li>✔ Better maintainability</li>
+                </ul>
+            </div>
+
+            <!-- Section 4: Types of Exceptions -->
+            <h2>4️⃣ Types of Exceptions</h2>
+
+            <h3>🔹 1) Asynchronous Exceptions</h3>
+            <div class="highlight-box">
+                <p><strong>Definition:</strong> Exceptions that have no direct relation to the current code execution.</p>
+                <p><strong>Characteristics:</strong></p>
+                <ul>
+                    <li>External interrupts</li>
+                    <li>OS signals</li>
+                    <li>Hardware interrupts</li>
+                    <li>User interruptions (CTRL+C)</li>
+                </ul>
+            </div>
+
+            <h3>🔹 2) Synchronous Exceptions</h3>
+            <div class="highlight-box">
+                <p><strong>Definition:</strong> Exceptions that occur during program execution as a direct result of the code.</p>
+                <p><strong>Characteristics:</strong></p>
+                <ul>
+                    <li>Caused by the program itself</li>
+                    <li>Predictable and handleable</li>
+                    <li>Planned exception handling</li>
+                    <li>Most common in C++</li>
+                </ul>
+            </div>
+
+            <h4>Example: Synchronous Exception</h4>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdexcept&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">void</span> <span class="function">processAge</span>(<span class="keyword">int</span> age) {
+    <span class="keyword">if</span> (age &lt; <span class="number">0</span> || age &gt; <span class="number">150</span>)
+        <span class="keyword">throw</span> <span class="function">invalid_argument</span>(<span class="string">"Invalid age value!"</span>);
+    
+    cout &lt;&lt; <span class="string">"Age is valid: "</span> &lt;&lt; age &lt;&lt; endl;
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        <span class="function">processAge</span>(<span class="number">25</span>);   <span class="comment">// OK</span>
+        <span class="function">processAge</span>(-<span class="number">5</span>);   <span class="comment">// Throws exception</span>
+    }
+    <span class="keyword">catch</span> (exception& e) {
+        cout &lt;&lt; <span class="string">"Error: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <!-- Section 5: Five Stages of Exception Handling -->
+            <h2>5️⃣ Five Stages of Exception Handling</h2>
+
+            <div class="important-box">
+                <h4>🔥 Critical Concept</h4>
+                <p>Every exception goes through exactly five stages from occurrence to resolution.</p>
+            </div>
+
+            <div class="flow-diagram">
+                <div class="flow-step"><strong>Stage 1: Incidence</strong><br>Error condition occurs</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step"><strong>Stage 2: Create Exception Object</strong><br>Exception object is thrown</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step"><strong>Stage 3: Detection</strong><br>System searches for matching catch block</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step"><strong>Stage 4: Handling</strong><br>Catch block executes</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step"><strong>Stage 5: Recovery or Abort</strong><br>Program continues or terminates</div>
+            </div>
+
+            <h3>Detailed Explanation of Each Stage</h3>
+
+            <h4>Stage 1: Incidence (Error Occurs)</h4>
+            <pre><code><span class="keyword">if</span> (b == <span class="number">0</span>)  <span class="comment">// Error condition detected</span></code></pre>
+
+            <h4>Stage 2: Create Exception Object</h4>
+            <pre><code><span class="keyword">throw</span> <span class="function">runtime_error</span>(<span class="string">"Divide by zero"</span>);  <span class="comment">// Object created and thrown</span></code></pre>
+
+            <h4>Stage 3: Detection</h4>
+            <pre><code><span class="keyword">catch</span>(runtime_error& e)  <span class="comment">// System detects matching handler</span></code></pre>
+
+            <h4>Stage 4: Handling</h4>
+            <pre><code>cout &lt;&lt; e.<span class="function">what</span>();  <span class="comment">// Handler processes the exception</span></code></pre>
+
+            <h4>Stage 5: Recovery or Abort</h4>
+            <pre><code><span class="comment">// Option 1: Recovery</span>
+cout &lt;&lt; <span class="string">"Using default value instead."</span>;
+<span class="keyword">return</span> defaultValue;
+
+<span class="comment">// Option 2: Abort</span>
+<span class="function">exit</span>(<span class="number">1</span>);</code></pre>
+
+            <h3>Complete Example Demonstrating All 5 Stages</h3>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdexcept&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> <span class="function">f</span>() {
+    <span class="keyword">bool</span> errorCondition = <span class="keyword">true</span>;
+    
+    <span class="keyword">if</span> (errorCondition) {        <span class="comment">// Stage 1: Incidence</span>
+        <span class="keyword">throw</span> -<span class="number">1</span>;                  <span class="comment">// Stage 2: Create Exception Object</span>
+    }
+    
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        <span class="function">f</span>();                       <span class="comment">// Function call</span>
+    }
+    <span class="keyword">catch</span> (<span class="keyword">int</span> x) {              <span class="comment">// Stage 3: Detection</span>
+        cout &lt;&lt; <span class="string">"Error occurred! Code: "</span> &lt;&lt; x &lt;&lt; endl;  <span class="comment">// Stage 4: Handling</span>
+    }
+    
+    cout &lt;&lt; <span class="string">"Program continues\n"</span>;  <span class="comment">// Stage 5: Recovery</span>
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <!-- Section 6: Why C++ Exception Handling is Better -->
+            <h2>6️⃣ Advantages of C++ Exception Handling</h2>
+
+            <div class="success-box">
+                <h4>✔ Key Advantages Over C-Style Error Handling</h4>
+                <ol>
+                    <li><strong>Automatic Destructor Calls (RAII)</strong> - Resources are automatically cleaned up</li>
+                    <li><strong>Clean Separation of Logic</strong> - Normal flow vs error flow</li>
+                    <li><strong>No Global Variables Needed</strong> - No errno-style global state</li>
+                    <li><strong>No goto Statements</strong> - Structured control flow</li>
+                    <li><strong>Structured Mechanism</strong> - Built into the language</li>
+                    <li><strong>Type-Safe</strong> - Compile-time type checking</li>
+                    <li><strong>Stack Unwinding</strong> - Automatic cleanup of stack frames</li>
+                </ol>
+            </div>
+
+            <!-- Section 7: RAII -->
+            <h2>7️⃣ RAII (Resource Acquisition Is Initialization)</h2>
+
+            <div class="important-box">
+                <h4>🔥 Very Important C++ Feature</h4>
+                <p>When an exception is thrown, destructors are <strong>automatically called</strong> for all objects in scope during stack unwinding. This ensures proper resource cleanup even when errors occur.</p>
+            </div>
+
+            <h3>RAII Example</h3>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdexcept&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">class</span> Test {
+<span class="keyword">public</span>:
+    Test() { 
+        cout &lt;&lt; <span class="string">"Constructor called\n"</span>; 
+    }
+    
+    ~Test() { 
+        cout &lt;&lt; <span class="string">"Destructor called - Cleanup happening!\n"</span>; 
+    }
+};
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        Test t;  <span class="comment">// Object created</span>
+        cout &lt;&lt; <span class="string">"Before throwing exception\n"</span>;
+        <span class="keyword">throw</span> <span class="function">runtime_error</span>(<span class="string">"Something went wrong!"</span>);
+        cout &lt;&lt; <span class="string">"After throw (never executed)\n"</span>;
+    }
+    <span class="keyword">catch</span> (exception& e) {
+        cout &lt;&lt; <span class="string">"Caught exception: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <h4>Output:</h4>
+            <pre><code>Constructor called
+Before throwing exception
+Destructor called - Cleanup happening!
+Caught exception: Something went wrong!</code></pre>
+
+            <div class="success-box">
+                <p><strong>🔥 Key Point:</strong> The destructor runs automatically even though the function didn't complete normally. This is a HUGE improvement over C-style error handling where you must manually clean up resources.</p>
+            </div>
+
+            <!-- Section 8: Complete Practice Program -->
+            <h2>8️⃣ Complete Practice Program - Bank Account</h2>
+
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdexcept&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">class</span> BankAccount {
+<span class="keyword">private</span>:
+    <span class="keyword">double</span> balance;
+
+<span class="keyword">public</span>:
+    <span class="comment">// Constructor</span>
+    BankAccount(<span class="keyword">double</span> b) : balance(b) {
+        cout &lt;&lt; <span class="string">"Account created with balance: "</span> &lt;&lt; balance &lt;&lt; endl;
+    }
+
+    <span class="comment">// Withdraw method with exception handling</span>
+    <span class="keyword">void</span> <span class="function">withdraw</span>(<span class="keyword">double</span> amount) {
+        <span class="keyword">if</span> (amount &lt;= <span class="number">0</span>)
+            <span class="keyword">throw</span> <span class="function">invalid_argument</span>(<span class="string">"Amount must be positive!"</span>);
+        
+        <span class="keyword">if</span> (amount &gt; balance)
+            <span class="keyword">throw</span> <span class="function">runtime_error</span>(<span class="string">"Insufficient balance!"</span>);
+        
+        balance -= amount;
+        cout &lt;&lt; <span class="string">"Withdrawn: "</span> &lt;&lt; amount &lt;&lt; endl;
+    }
+
+    <span class="comment">// Deposit method</span>
+    <span class="keyword">void</span> <span class="function">deposit</span>(<span class="keyword">double</span> amount) {
+        <span class="keyword">if</span> (amount &lt;= <span class="number">0</span>)
+            <span class="keyword">throw</span> <span class="function">invalid_argument</span>(<span class="string">"Amount must be positive!"</span>);
+        
+        balance += amount;
+        cout &lt;&lt; <span class="string">"Deposited: "</span> &lt;&lt; amount &lt;&lt; endl;
+    }
+
+    <span class="comment">// Display balance</span>
+    <span class="keyword">void</span> <span class="function">show</span>() <span class="keyword">const</span> {
+        cout &lt;&lt; <span class="string">"Current Balance: "</span> &lt;&lt; balance &lt;&lt; endl;
+    }
+};
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        BankAccount acc(<span class="number">1000</span>);
+        acc.<span class="function">show</span>();
+        
+        acc.<span class="function">withdraw</span>(<span class="number">500</span>);
+        acc.<span class="function">show</span>();
+        
+        acc.<span class="function">deposit</span>(<span class="number">200</span>);
+        acc.<span class="function">show</span>();
+        
+        <span class="comment">// This will throw an exception</span>
+        acc.<span class="function">withdraw</span>(<span class="number">1000</span>);
+        
+        acc.<span class="function">show</span>();  <span class="comment">// This line won't execute</span>
+    }
+    <span class="keyword">catch</span> (invalid_argument& e) {
+        cout &lt;&lt; <span class="string">"Invalid Argument: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    <span class="keyword">catch</span> (runtime_error& e) {
+        cout &lt;&lt; <span class="string">"Runtime Error: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    <span class="keyword">catch</span> (exception& e) {
+        cout &lt;&lt; <span class="string">"General Exception: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    
+    cout &lt;&lt; <span class="string">"Program continues safely.\n"</span>;
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <!-- Section 9: Basic Mechanism -->
+            <h2>9️⃣ Basic Mechanism: try - throw - catch</h2>
+
+            <h3>Syntax Structure</h3>
+            <pre><code><span class="keyword">try</span> {
+    <span class="comment">// Code that may throw exceptions</span>
+    <span class="comment">// Normal program logic</span>
+}
+<span class="keyword">catch</span>(ExceptionType e) {
+    <span class="comment">// Exception handler</span>
+    <span class="comment">// Error recovery code</span>
+}</code></pre>
+
+            <h3>Complete Example</h3>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdexcept&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">void</span> <span class="function">g</span>() {
+    cout &lt;&lt; <span class="string">"g() started\n"</span>;
+    
+    <span class="comment">// Throw an exception</span>
+    <span class="keyword">throw</span> <span class="function">runtime_error</span>(<span class="string">"Error occurred in g()"</span>);
+    
+    <span class="comment">// This line never executes</span>
+    cout &lt;&lt; <span class="string">"g() ended\n"</span>;
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        cout &lt;&lt; <span class="string">"Calling g()...\n"</span>;
+        <span class="function">g</span>();
+        cout &lt;&lt; <span class="string">"Returned from g()\n"</span>;  <span class="comment">// Never executes</span>
+    }
+    <span class="keyword">catch</span> (exception& e) {
+        cout &lt;&lt; <span class="string">"Exception caught: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    
+    cout &lt;&lt; <span class="string">"Program continues after exception\n"</span>;
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <!-- Section 10: What Happens Internally -->
+            <h2>🔟 What Happens Internally During Exception Handling</h2>
+
+            <div class="flow-diagram">
+                <h4>Internal Exception Mechanism</h4>
+                <div class="flow-step">1. Exception object is created</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">2. Stack unwinding begins</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">3. Local objects are destroyed</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">4. Control moves to matching catch block</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">5. Handler executes</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">6. Normal flow resumes after try-catch</div>
+            </div>
+
+            <div class="highlight-box">
+                <h4>Stack Unwinding Process</h4>
+                <ul>
+                    <li>When an exception is thrown, the runtime system searches for a matching catch block</li>
+                    <li>As it searches, it "unwinds" the stack, calling destructors for all local objects</li>
+                    <li>This ensures proper cleanup of resources</li>
+                    <li>The process continues until a matching handler is found or the program terminates</li>
+                </ul>
+            </div>
+
+            <!-- Section 11: Exception Object Types -->
+            <h2>1️⃣1️⃣ Exception Object Types</h2>
+
+            <p>You can throw various types as exceptions:</p>
+
+            <h3>Built-in Types</h3>
+            <pre><code><span class="keyword">throw</span> <span class="number">42</span>;              <span class="comment">// int</span>
+<span class="keyword">throw</span> <span class="number">3.14</span>;            <span class="comment">// double</span>
+<span class="keyword">throw</span> <span class="string">"Error message"</span>; <span class="comment">// const char*</span></code></pre>
+
+            <h3>Standard Library Exceptions</h3>
+            <pre><code><span class="keyword">throw</span> <span class="function">runtime_error</span>(<span class="string">"Runtime error"</span>);
+<span class="keyword">throw</span> <span class="function">logic_error</span>(<span class="string">"Logic error"</span>);
+<span class="keyword">throw</span> <span class="function">invalid_argument</span>(<span class="string">"Invalid argument"</span>);
+<span class="keyword">throw</span> <span class="function">out_of_range</span>(<span class="string">"Out of range"</span>);</code></pre>
+
+            <h3>Custom Exception Classes</h3>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;exception&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="comment">// Custom exception class</span>
+<span class="keyword">class</span> MyException : <span class="keyword">public</span> exception {
+<span class="keyword">private</span>:
+    <span class="keyword">const char</span>* message;
+    
+<span class="keyword">public</span>:
+    MyException(<span class="keyword">const char</span>* msg) : message(msg) {}
+    
+    <span class="keyword">const char</span>* <span class="function">what</span>() <span class="keyword">const noexcept override</span> {
+        <span class="keyword">return</span> message;
+    }
+};
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        <span class="keyword">throw</span> MyException(<span class="string">"This is a custom exception!"</span>);
+    }
+    <span class="keyword">catch</span> (exception& e) {
+        cout &lt;&lt; <span class="string">"Caught: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <!-- Section 12: Multiple Catch Blocks -->
+            <h2>1️⃣2️⃣ Multiple Catch Clauses</h2>
+
+            <div class="important-box">
+                <p><strong>Important:</strong> Catch blocks are checked in order from top to bottom. The first matching catch block is executed.</p>
+            </div>
+
+            <h3>Example with Multiple Types</h3>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdexcept&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">void</span> <span class="function">test</span>(<span class="keyword">int</span> x) {
+    <span class="keyword">if</span> (x == <span class="number">1</span>) <span class="keyword">throw</span> <span class="number">10</span>;              <span class="comment">// Throw int</span>
+    <span class="keyword">if</span> (x == <span class="number">2</span>) <span class="keyword">throw</span> <span class="number">3.14</span>;           <span class="comment">// Throw double</span>
+    <span class="keyword">if</span> (x == <span class="number">3</span>) <span class="keyword">throw</span> <span class="function">runtime_error</span>(<span class="string">"Error"</span>);  <span class="comment">// Throw exception</span>
+    <span class="keyword">if</span> (x == <span class="number">4</span>) <span class="keyword">throw</span> <span class="string">"String error"</span>;   <span class="comment">// Throw string</span>
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        <span class="function">test</span>(<span class="number">2</span>);  <span class="comment">// Try different values: 1, 2, 3, 4</span>
+    }
+    <span class="keyword">catch</span> (<span class="keyword">int</span> i) {
+        cout &lt;&lt; <span class="string">"Integer exception caught: "</span> &lt;&lt; i &lt;&lt; endl;
+    }
+    <span class="keyword">catch</span> (<span class="keyword">double</span> d) {
+        cout &lt;&lt; <span class="string">"Double exception caught: "</span> &lt;&lt; d &lt;&lt; endl;
+    }
+    <span class="keyword">catch</span> (runtime_error& e) {
+        cout &lt;&lt; <span class="string">"Runtime error caught: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    <span class="keyword">catch</span> (<span class="keyword">const char</span>* msg) {
+        cout &lt;&lt; <span class="string">"String exception caught: "</span> &lt;&lt; msg &lt;&lt; endl;
+    }
+    <span class="keyword">catch</span> (...) {
+        cout &lt;&lt; <span class="string">"Unknown exception caught\n"</span>;
+    }
+    
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <!-- Section 13: Matching Rules -->
+            <h2>1️⃣3️⃣ Exception Matching Rules</h2>
+
+            <div class="highlight-box">
+                <h4>Important Matching Principles:</h4>
+                <ul>
+                    <li>✔ <strong>Exact match preferred</strong> - Type must match exactly</li>
+                    <li>✔ <strong>No implicit conversions</strong> - int won't match double catch</li>
+                    <li>✔ <strong>Upcasting allowed</strong> - Derived class matches base class</li>
+                    <li>✔ <strong>Order matters</strong> - First match wins</li>
+                </ul>
+            </div>
+
+            <h3>Derived vs Base Example</h3>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">class</span> Base {};
+<span class="keyword">class</span> Derived : <span class="keyword">public</span> Base {};
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        <span class="keyword">throw</span> Derived();
+    }
+    <span class="keyword">catch</span> (Derived& d) {
+        cout &lt;&lt; <span class="string">"Derived caught\n"</span>;  <span class="comment">// This executes</span>
+    }
+    <span class="keyword">catch</span> (Base& b) {
+        cout &lt;&lt; <span class="string">"Base caught\n"</span>;      <span class="comment">// Never reached</span>
+    }
+    
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <div class="danger-box">
+                <h4>⚠ Common Mistake - Wrong Order</h4>
+                <pre><code><span class="comment">// WRONG - Base catches everything, Derived never executes</span>
+<span class="keyword">catch</span> (Base& b) {
+    cout &lt;&lt; <span class="string">"Base caught\n"</span>;
+}
+<span class="keyword">catch</span> (Derived& d) {  <span class="comment">// Dead code!</span>
+    cout &lt;&lt; <span class="string">"Derived caught\n"</span>;
+}</code></pre>
+                <p><strong>👉 Rule: Always put derived class catches before base class catches!</strong></p>
+            </div>
+
+            <!-- Section 14: Catch-All -->
+            <h2>1️⃣4️⃣ Catch-All Clause</h2>
+
+            <p>The catch-all clause catches any exception type:</p>
+
+            <pre><code><span class="keyword">catch</span> (...) {
+    cout &lt;&lt; <span class="string">"Caught unknown exception\n"</span>;
+}</code></pre>
+
+            <div class="important-box">
+                <h4>Rules for Catch-All:</h4>
+                <ul>
+                    <li>Must be the <strong>last</strong> catch block</li>
+                    <li>Cannot access the exception object</li>
+                    <li>Used for catching unexpected exceptions</li>
+                    <li>Good for cleanup or logging</li>
+                </ul>
+            </div>
+
+            <h3>Complete Example</h3>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">void</span> <span class="function">riskyFunction</span>(<span class="keyword">int</span> choice) {
+    <span class="keyword">if</span> (choice == <span class="number">1</span>) <span class="keyword">throw</span> <span class="number">100</span>;
+    <span class="keyword">if</span> (choice == <span class="number">2</span>) <span class="keyword">throw</span> <span class="number">2.5</span>;
+    <span class="keyword">if</span> (choice == <span class="number">3</span>) <span class="keyword">throw</span> <span class="string">"Error"</span>;
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        <span class="function">riskyFunction</span>(<span class="number">3</span>);
+    }
+    <span class="keyword">catch</span> (<span class="keyword">int</span> i) {
+        cout &lt;&lt; <span class="string">"Int: "</span> &lt;&lt; i &lt;&lt; endl;
+    }
+    <span class="keyword">catch</span> (<span class="keyword">double</span> d) {
+        cout &lt;&lt; <span class="string">"Double: "</span> &lt;&lt; d &lt;&lt; endl;
+    }
+    <span class="keyword">catch</span> (...) {  <span class="comment">// Must be last!</span>
+        cout &lt;&lt; <span class="string">"Caught unknown type\n"</span>;
+    }
+    
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <!-- Section 15: Exception Propagation -->
+            <h2>1️⃣5️⃣ Exception Propagation</h2>
+
+            <div class="highlight-box">
+                <p><strong>Concept:</strong> If a function doesn't handle an exception, it automatically propagates to the caller. This continues up the call stack until a handler is found or the program terminates.</p>
+            </div>
+
+            <h3>Deep Call Stack Example</h3>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdexcept&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">void</span> <span class="function">h</span>() {
+    cout &lt;&lt; <span class="string">"h() called\n"</span>;
+    <span class="keyword">throw</span> <span class="function">runtime_error</span>(<span class="string">"Error in h()"</span>);  <span class="comment">// Exception thrown here</span>
+    cout &lt;&lt; <span class="string">"h() ended\n"</span>;  <span class="comment">// Never executes</span>
+}
+
+<span class="keyword">void</span> <span class="function">g</span>() {
+    cout &lt;&lt; <span class="string">"g() called\n"</span>;
+    <span class="function">h</span>();  <span class="comment">// Not handling - propagates to caller</span>
+    cout &lt;&lt; <span class="string">"g() ended\n"</span>;  <span class="comment">// Never executes</span>
+}
+
+<span class="keyword">void</span> <span class="function">f</span>() {
+    cout &lt;&lt; <span class="string">"f() called\n"</span>;
+    <span class="keyword">try</span> {
+        <span class="function">g</span>();  <span class="comment">// Exception propagated from h() through g()</span>
+    }
+    <span class="keyword">catch</span> (exception& e) {
+        cout &lt;&lt; <span class="string">"Handled in f(): "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    cout &lt;&lt; <span class="string">"f() continues normally\n"</span>;
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="function">f</span>();
+    cout &lt;&lt; <span class="string">"Program completed\n"</span>;
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <h4>Output:</h4>
+            <pre><code>f() called
+g() called
+h() called
+Handled in f(): Error in h()
+f() continues normally
+Program completed</code></pre>
+
+            <div class="flow-diagram">
+                <h4>Exception Propagation Path</h4>
+                <div class="flow-step">h() throws exception</div>
+                <div class="arrow">↓ propagates</div>
+                <div class="flow-step">g() doesn't handle</div>
+                <div class="arrow">↓ propagates</div>
+                <div class="flow-step">f() catches and handles</div>
+            </div>
+
+            <!-- Section 16: Rethrow -->
+            <h2>1️⃣6️⃣ Rethrowing Exceptions</h2>
+
+            <h3>Type 1: Simple Rethrow (Recommended)</h3>
+            <pre><code><span class="keyword">catch</span> (exception& e) {
+    cout &lt;&lt; <span class="string">"Logging error: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    <span class="keyword">throw</span>;  <span class="comment">// Rethrows the same exception object</span>
+}</code></pre>
+
+            <div class="success-box">
+                <p>✔ No new object is created<br>
+                ✔ Original exception is forwarded<br>
+                ✔ More efficient</p>
+            </div>
+
+            <h3>Type 2: Rethrow with Object</h3>
+            <pre><code><span class="keyword">catch</span> (exception& e) {
+    cout &lt;&lt; <span class="string">"Processing error\n"</span>;
+    <span class="keyword">throw</span> e;  <span class="comment">// Creates a copy of the exception</span>
+}</code></pre>
+
+            <div class="important-box">
+                <p>⚠ A copy is created<br>
+                ⚠ Requires copy constructor<br>
+                ⚠ Less efficient</p>
+            </div>
+
+            <h3>Complete Rethrow Example</h3>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdexcept&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">void</span> <span class="function">innerFunction</span>() {
+    <span class="keyword">try</span> {
+        <span class="keyword">throw</span> <span class="function">runtime_error</span>(<span class="string">"Original error"</span>);
+    }
+    <span class="keyword">catch</span> (exception& e) {
+        cout &lt;&lt; <span class="string">"Inner caught: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+        cout &lt;&lt; <span class="string">"Doing cleanup...\n"</span>;
+        <span class="keyword">throw</span>;  <span class="comment">// Rethrow to caller</span>
+    }
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        <span class="function">innerFunction</span>();
+    }
+    <span class="keyword">catch</span> (exception& e) {
+        cout &lt;&lt; <span class="string">"Outer caught: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <!-- Section 17: Function Try Block -->
+            <h2>1️⃣7️⃣ Function Try Block</h2>
+
+            <p>The entire function body can be wrapped in a try block:</p>
+
+            <h3>Syntax</h3>
+            <pre><code><span class="keyword">int</span> <span class="function">main</span>() <span class="keyword">try</span> {
+    <span class="comment">// Function body</span>
+    <span class="keyword">throw</span> <span class="function">runtime_error</span>(<span class="string">"Error"</span>);
+}
+<span class="keyword">catch</span> (exception& e) {
+    cout &lt;&lt; <span class="string">"Handled: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    <span class="keyword">return</span> <span class="number">1</span>;
+}</code></pre>
+
+            <h3>Complete Example</h3>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdexcept&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> <span class="function">divide</span>(<span class="keyword">int</span> a, <span class="keyword">int</span> b) <span class="keyword">try</span> {
+    <span class="keyword">if</span> (b == <span class="number">0</span>)
+        <span class="keyword">throw</span> <span class="function">runtime_error</span>(<span class="string">"Division by zero"</span>);
+    <span class="keyword">return</span> a / b;
+}
+<span class="keyword">catch</span> (exception& e) {
+    cout &lt;&lt; <span class="string">"Error in divide(): "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    <span class="keyword">throw</span>;  <span class="comment">// Rethrow</span>
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        <span class="keyword">int</span> result = <span class="function">divide</span>(<span class="number">10</span>, <span class="number">0</span>);
+        cout &lt;&lt; <span class="string">"Result: "</span> &lt;&lt; result &lt;&lt; endl;
+    }
+    <span class="keyword">catch</span> (...) {
+        cout &lt;&lt; <span class="string">"Caught in main\n"</span>;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <!-- Section 18: Unhandled Exceptions -->
+            <h2>1️⃣8️⃣ Unhandled Exceptions</h2>
+
+            <div class="danger-box">
+                <h4>⚠ What Happens When No Handler is Found?</h4>
+                <p>If an exception reaches <code>main()</code> and no matching catch block exists:</p>
+                <ul>
+                    <li>The <code>terminate()</code> function is automatically called</li>
+                    <li>Program execution stops immediately</li>
+                    <li>Destructors may not be called</li>
+                    <li>Resources may not be cleaned up</li>
+                </ul>
+            </div>
+
+            <h3>Example of Unhandled Exception</h3>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdexcept&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="comment">// No try-catch block!</span>
+    <span class="keyword">throw</span> <span class="function">runtime_error</span>(<span class="string">"Unhandled exception"</span>);
+    
+    cout &lt;&lt; <span class="string">"This never prints\n"</span>;
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+
+<span class="comment">// Program will terminate with error message</span></code></pre>
+
+            <!-- Section 19: Standard Exception Hierarchy -->
+            <h2>1️⃣9️⃣ Standard Exception Hierarchy</h2>
+
+            <div class="highlight-box">
+                <h4>C++ Standard Exception Class Hierarchy</h4>
+                <pre><code>std::exception (base class)
+    │
+    ├── std::logic_error
+    │   ├── std::invalid_argument
+    │   ├── std::domain_error
+    │   ├── std::length_error
+    │   └── std::out_of_range
+    │
+    ├── std::runtime_error
+    │   ├── std::range_error
+    │   ├── std::overflow_error
+    │   └── std::underflow_error
+    │
+    ├── std::bad_alloc
+    ├── std::bad_cast
+    ├── std::bad_typeid
+    └── std::bad_exception</code></pre>
+            </div>
+
+            <h3>Common Standard Exceptions</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Exception</th>
+                        <th>Description</th>
+                        <th>When Thrown</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>runtime_error</code></td>
+                        <td>General runtime error</td>
+                        <td>Errors during execution</td>
+                    </tr>
+                    <tr>
+                        <td><code>logic_error</code></td>
+                        <td>Logic error in program</td>
+                        <td>Logical mistakes</td>
+                    </tr>
+                    <tr>
+                        <td><code>bad_alloc</code></td>
+                        <td>Memory allocation failure</td>
+                        <td>new fails</td>
+                    </tr>
+                    <tr>
+                        <td><code>bad_cast</code></td>
+                        <td>Invalid dynamic_cast</td>
+                        <td>Type casting fails</td>
+                    </tr>
+                    <tr>
+                        <td><code>out_of_range</code></td>
+                        <td>Index out of bounds</td>
+                        <td>vector.at() with invalid index</td>
+                    </tr>
+                    <tr>
+                        <td><code>invalid_argument</code></td>
+                        <td>Invalid function argument</td>
+                        <td>Invalid parameters</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Examples of Standard Exceptions</h3>
+
+            <h4>bad_alloc Example</h4>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;new&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        <span class="keyword">int</span>* ptr = <span class="keyword">new int</span>[<span class="number">9999999999999</span>];  <span class="comment">// Huge allocation</span>
+    }
+    <span class="keyword">catch</span> (bad_alloc& e) {
+        cout &lt;&lt; <span class="string">"Memory allocation failed!\n"</span>;
+        cout &lt;&lt; <span class="string">"Error: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <h4>out_of_range Example</h4>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;vector&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        vector&lt;<span class="keyword">int</span>&gt; v = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>};
+        cout &lt;&lt; v.<span class="function">at</span>(<span class="number">10</span>);  <span class="comment">// Index 10 doesn't exist</span>
+    }
+    <span class="keyword">catch</span> (out_of_range& e) {
+        cout &lt;&lt; <span class="string">"Out of range error!\n"</span>;
+        cout &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <h4>invalid_argument Example</h4>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdexcept&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">void</span> <span class="function">setAge</span>(<span class="keyword">int</span> age) {
+    <span class="keyword">if</span> (age &lt; <span class="number">0</span> || age &gt; <span class="number">150</span>)
+        <span class="keyword">throw</span> <span class="function">invalid_argument</span>(<span class="string">"Age must be between 0 and 150"</span>);
+    
+    cout &lt;&lt; <span class="string">"Age set to: "</span> &lt;&lt; age &lt;&lt; endl;
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        <span class="function">setAge</span>(<span class="number">25</span>);
+        <span class="function">setAge</span>(-<span class="number">5</span>);  <span class="comment">// Invalid</span>
+    }
+    <span class="keyword">catch</span> (invalid_argument& e) {
+        cout &lt;&lt; <span class="string">"Error: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <!-- Section 20: Stack Unwinding -->
+            <h2>2️⃣0️⃣ Stack Unwinding (Detailed)</h2>
+
+            <div class="important-box">
+                <h4>🔥 What is Stack Unwinding?</h4>
+                <p>When an exception is thrown, the runtime system:</p>
+                <ol>
+                    <li>Searches for a matching catch handler</li>
+                    <li>Removes stack frames one by one (unwinding)</li>
+                    <li>Calls destructors for all local objects in each frame</li>
+                    <li>Continues until a handler is found</li>
+                </ol>
+            </div>
+
+            <h3>Stack Unwinding Example</h3>
+            <pre><code><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdexcept&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">class</span> Resource {
+<span class="keyword">private</span>:
+    <span class="keyword">int</span> id;
+    
+<span class="keyword">public</span>:
+    Resource(<span class="keyword">int</span> i) : id(i) {
+        cout &lt;&lt; <span class="string">"Resource "</span> &lt;&lt; id &lt;&lt; <span class="string">" acquired\n"</span>;
+    }
+    
+    ~Resource() {
+        cout &lt;&lt; <span class="string">"Resource "</span> &lt;&lt; id &lt;&lt; <span class="string">" released\n"</span>;
+    }
+};
+
+<span class="keyword">void</span> <span class="function">level3</span>() {
+    Resource r3(<span class="number">3</span>);
+    cout &lt;&lt; <span class="string">"In level3\n"</span>;
+    <span class="keyword">throw</span> <span class="function">runtime_error</span>(<span class="string">"Exception at level 3"</span>);
+}
+
+<span class="keyword">void</span> <span class="function">level2</span>() {
+    Resource r2(<span class="number">2</span>);
+    cout &lt;&lt; <span class="string">"In level2\n"</span>;
+    <span class="function">level3</span>();
+}
+
+<span class="keyword">void</span> <span class="function">level1</span>() {
+    Resource r1(<span class="number">1</span>);
+    cout &lt;&lt; <span class="string">"In level1\n"</span>;
+    <span class="function">level2</span>();
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">try</span> {
+        <span class="function">level1</span>();
+    }
+    <span class="keyword">catch</span> (exception& e) {
+        cout &lt;&lt; <span class="string">"\nException caught: "</span> &lt;&lt; e.<span class="function">what</span>() &lt;&lt; endl;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+
+            <h4>Output:</h4>
+            <pre><code>Resource 1 acquired
+In level1
+Resource 2 acquired
+In level2
+Resource 3 acquired
+In level3
+Resource 3 released    <-- Stack unwinding begins
+Resource 2 released    <-- Continues unwinding
+Resource 1 released    <-- Completes unwinding
+
+Exception caught: Exception at level 3</code></pre>
+
+            <div class="success-box">
+                <p><strong>Notice:</strong> All resources are properly released in reverse order, even though the exception was thrown. This is the power of RAII and stack unwinding!</p>
+            </div>
+
+            <!-- Section 21: Desirable Characteristics -->
+            <h2>2️⃣1️⃣ Desirable Characteristics of C++ Exceptions</h2>
+
+            <h3>1. Separation of Normal and Error Flow</h3>
+            <div class="highlight-box">
+                <pre><code><span class="comment">// Clean separation</span>
+<span class="keyword">try</span> {
+    <span class="comment">// Normal business logic</span>
+    <span class="function">step1</span>();
+    <span class="function">step2</span>();
+    <span class="function">step3</span>();
+}
+<span class="keyword">catch</span> (...) {
+    <span class="comment">// Error handling logic</span>
+    <span class="function">handleError</span>();
+}</code></pre>
+            </div>
+
+            <h3>2. Language-Level Mechanism</h3>
+            <p>Exceptions are built into the C++ language itself, not just a library feature. The compiler understands:</p>
+            <ul>
+                <li><code>try</code> blocks</li>
+                <li><code>catch</code> handlers</li>
+                <li><code>throw</code> expressions</li>
+                <li>Stack unwinding</li>
+                <li>Type matching</li>
+            </ul>
+
+            <h3>3. Automatic Object Destruction</h3>
+            <div class="success-box">
+                <p><strong>Critical Feature:</strong> When an exception occurs, all local automatic objects are automatically destroyed by calling their destructors. This is RAII in action!</p>
+            </div>
+
+            <h3>4. Can Exit Deep Nesting</h3>
+            <pre><code><span class="comment">// Call chain: main → f → g → h</span>
+<span class="comment">// If error in h, exception travels back to main automatically</span>
+<span class="comment">// No need for complex error code propagation</span></code></pre>
+
+            <h3>5. Multiple Exception Types with Single Handler</h3>
+            <pre><code><span class="keyword">catch</span> (...) {
+    <span class="comment">// Can catch ANY exception type</span>
+}</code></pre>
+
+            <!-- Section 22: Summary -->
+            <h2>2️⃣2️⃣ Complete Summary</h2>
+
+            <div class="important-box">
+                <h4>✔ Core Concepts Learned</h4>
+                <ul>
+                    <li><span class="badge">Concept</span> Difference between errors and exceptions</li>
+                    <li><span class="badge">Concept</span> Five causes of exceptions</li>
+                    <li><span class="badge">Concept</span> Separation of normal flow and exception flow</li>
+                    <li><span class="badge">Concept</span> Synchronous vs asynchronous exceptions</li>
+                    <li><span class="badge">Concept</span> Five stages of exception handling</li>
+                    <li><span class="badge">Feature</span> RAII and automatic cleanup</li>
+                    <li><span class="badge">Feature</span> Stack unwinding mechanism</li>
+                    <li><span class="badge">Syntax</span> try - throw - catch blocks</li>
+                    <li><span class="badge">Feature</span> Multiple catch blocks and matching rules</li>
+                    <li><span class="badge">Feature</span> Exception propagation through call stack</li>
+                    <li><span class="badge">Feature</span> Rethrowing exceptions</li>
+                    <li><span class="badge">Library</span> Standard exception hierarchy</li>
+                </ul>
+            </div>
+
+            <h3>Final Mental Model</h3>
+            <div class="flow-diagram">
+                <h4>Complete Exception Flow</h4>
+                <div class="flow-step">Error condition detected</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">throw exception object</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">Stack unwinding begins</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">Destructors called automatically</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">Search for matching catch block</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">Handler executes</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">Normal flow resumes after try-catch</div>
+            </div>
+
+            <h3>Key Advantages Recap</h3>
+            <div class="success-box">
+                <ul>
+                    <li>✔ <strong>Automatic cleanup</strong> - RAII ensures resources are freed</li>
+                    <li>✔ <strong>Clean code</strong> - Separate normal logic from error handling</li>
+                    <li>✔ <strong>Type safety</strong> - Compile-time type checking</li>
+                    <li>✔ <strong>Flexible handling</strong> - Multiple catch blocks, catch-all, rethrow</li>
+                    <li>✔ <strong>Deep propagation</strong> - Automatically travels up call stack</li>
+                    <li>✔ <strong>Standard library</strong> - Rich exception hierarchy</li>
+                    <li>✔ <strong>Language support</strong> - Built into C++ compiler</li>
+                </ul>
+            </div>
+
+            <!-- Resources Section -->
+            <div class="resources">
+                <h3>📚 Additional Learning Resources</h3>
+                
+                <h4>Video Tutorials</h4>
+                <ul>
+                    <li>
+                        📹 <a href="https://www.youtube.com/watch?v=S322GolfN90&list=PLqu1LEUz3ju04dXn0JOgKYPHHnV2at-lG&index=46" target="_blank">
+                        Exception Handling Part 1 - YouTube Video
+                        </a>
+                    </li>
+                    <li>
+                        📹 <a href="https://www.youtube.com/watch?v=-kiafRegO1E&list=PLqu1LEUz3ju04dXn0JOgKYPHHnV2at-lG&index=47" target="_blank">
+                        Exception Handling Part 2 - YouTube Video
+                        </a>
+                    </li>
+                </ul>
+                
+                <h4>GeeksforGeeks Articles</h4>
+                <ul>
+                    <li>
+                        📄 <a href="https://www.geeksforgeeks.org/cpp/exception-handling-c/" target="_blank">
+                        Exception Handling in C++ - Complete Guide
+                        </a>
+                    </li>
+                    <li>
+                        📄 <a href="https://www.geeksforgeeks.org/cpp/exception-handling-using-classes-in-cpp/" target="_blank">
+                        Exception Handling Using Classes in C++
+                        </a>
+                    </li>
+                    <li>
+                        📄 <a href="https://www.geeksforgeeks.org/cpp/stack-unwinding-in-c/" target="_blank">
+                        Stack Unwinding in C++ - Detailed Explanation
+                        </a>
+                    </li>
+                    <li>
+                        📄 <a href="https://www.geeksforgeeks.org/cpp/user-defined-custom-exception-with-class-in-c/" target="_blank">
+                        User-Defined Custom Exceptions with Classes in C++
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2024 C++ Exception Handling Guide | Module 36 Complete Notes</p>
+            <p>Keep practicing and mastering exception handling! 🚀</p>
+        </footer>
+    </div>
+</body>
+</html>
