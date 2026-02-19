@@ -1,0 +1,348 @@
+constexpr (Constant Expression)
+🔹 What is constexpr?
+
+constexpr is used to tell the compiler:
+
+"This expression MUST be evaluated at compile time."
+
+It improves:
+
+✅ Performance
+
+✅ Safety
+
+✅ Compile-time guarantees
+
+🔹 Difference: const vs constexpr
+const	constexpr
+Value cannot change	Must be evaluated at compile time
+Can be runtime constant	Must be compile-time constant
+Focus = immutability	Focus = compile-time evaluation
+🔹 Example 1: Basic Usage
+#include <iostream>
+using namespace std;
+
+constexpr int square(int x) {
+    return x * x;
+}
+
+int main() {
+    constexpr int val = square(5);  // Evaluated at compile time
+    cout << val << endl;
+}
+
+👉 square(5) is computed during compilation.
+
+🔹 Example 2: constexpr with User Defined Type
+#include <iostream>
+using namespace std;
+
+struct Point {
+    int x, y;
+
+    constexpr Point(int a, int b) : x(a), y(b) {}
+};
+
+int main() {
+    constexpr Point origin(0, 0);   // Constructed at compile time
+    constexpr int value = origin.x;
+
+    cout << value << endl;
+}
+
+✔ C++11 allows constexpr constructors.
+
+🔹 Where constexpr is useful?
+
+Array size
+
+Switch case
+
+Template parameters
+
+Enum values
+
+🔹 Example: Switch Case (From Transcript Idea)
+enum Flags { GOOD = 1, BAD = 2, EOF_FLAG = 4 };
+
+constexpr int operator|(Flags a, Flags b) {
+    return int(a) | int(b);
+}
+
+int main() {
+    switch (BAD | EOF_FLAG) {
+        case BAD | EOF_FLAG:
+            cout << "Matched\n";
+            break;
+    }
+}
+
+Without constexpr, this would not compile in switch case.
+
+2️⃣ noexcept
+🔹 What is noexcept?
+
+Used to declare:
+
+"This function will NOT throw exceptions."
+
+It is a compile-time feature.
+
+🔹 Basic Example
+#include <iostream>
+using namespace std;
+
+void func() noexcept {
+    cout << "Safe function\n";
+}
+
+If func() throws → std::terminate() is called.
+
+🔹 Conditional noexcept (Important for Templates)
+
+From transcript:
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+template<typename T>
+void callFunc(T f, vector<int>& v) 
+    noexcept(noexcept(f(v.at(0))))
+{
+    f(v.at(0));
+}
+Explanation:
+
+noexcept(expr) checks at compile time whether expr can throw.
+
+If true → function becomes noexcept.
+
+If false → function is not noexcept.
+
+⚡ Very powerful in template programming.
+
+🔹 Why Important?
+
+Improves STL performance
+
+Move constructors should be noexcept
+
+Destructors should not throw
+
+3️⃣ nullptr
+🔹 Problem Before C++11
+
+NULL was basically 0.
+
+This created confusion in function overloading.
+
+🔹 C++11 Solution: nullptr
+
+nullptr is:
+
+A keyword
+
+Type: std::nullptr_t
+
+Can convert to any pointer
+
+Cannot convert to int
+
+🔹 Example 1
+int* p = nullptr;
+
+if (p == nullptr) {
+    cout << "Null pointer\n";
+}
+🔹 Function Overload Problem
+#include <iostream>
+using namespace std;
+
+void func(int) {
+    cout << "Integer version\n";
+}
+
+void func(int*) {
+    cout << "Pointer version\n";
+}
+
+int main() {
+    func(0);        // Calls int version
+    func(nullptr);  // Calls pointer version
+}
+
+🔥 nullptr solves overload ambiguity.
+
+🔹 Template Forwarding Problem (Advanced Concept)
+void h(int*) {
+    cout << "Pointer function\n";
+}
+
+template<typename F, typename P>
+void logAndCall(F func, P param) {
+    func(param);
+}
+
+int main() {
+    logAndCall(h, nullptr);  // Works correctly
+}
+
+If you pass 0 → template deduces int → fails.
+If you pass nullptr → deduces correct pointer type.
+
+4️⃣ Inline Namespaces (Version Management)
+
+Used for:
+
+Library version control
+
+🔹 Why Needed?
+
+Suppose a company releases:
+
+Version 1
+
+Version 2
+
+They want:
+
+Default → New version
+
+Optional → Old version
+
+🔹 Example
+#include <iostream>
+using namespace std;
+
+namespace Library {
+
+    namespace v1 {
+        void show() {
+            cout << "Version 1\n";
+        }
+    }
+
+    inline namespace v2 {
+        void show() {
+            cout << "Version 2\n";
+        }
+    }
+}
+
+int main() {
+    Library::show();      // Calls v2 (default)
+    Library::v1::show();  // Explicitly call old version
+}
+
+✔ inline namespace makes version default automatically.
+
+5️⃣ User Defined Literals
+🔹 Problem
+
+We can write:
+
+10
+3.14
+"hello"
+
+But cannot write:
+
+10_km
+3.5_kg
+
+C++11 solves this.
+
+🔹 Syntax
+return_type operator "" _suffix(parameters)
+
+⚠ Suffix must start with underscore _
+
+🔹 Example 1: Seconds Literal
+#include <iostream>
+using namespace std;
+
+long double operator "" _sec(long double val) {
+    return val;
+}
+
+int main() {
+    auto time = 5.0_sec;
+    cout << time << " seconds\n";
+}
+🔹 Example 2: Kilogram Conversion
+long double operator "" _kg(long double val) {
+    return val * 1000;  // convert to grams
+}
+
+int main() {
+    cout << 3.5_kg << " grams\n";
+}
+🔹 Example 3: Complex Number
+#include <iostream>
+#include <complex>
+using namespace std;
+
+complex<double> operator "" _i(long double val) {
+    return complex<double>(0, val);
+}
+
+int main() {
+    complex<double> c = 3.0 + 4.0_i;
+    cout << c << endl;
+}
+🔹 Why Powerful?
+
+Makes code readable
+
+Creates literals for user-defined types
+
+Used in STL (like "hello"s)
+
+6️⃣ Raw String Literals
+🔹 Problem
+
+Normal string:
+
+"Line1\nLine2"
+
+\n becomes new line.
+
+🔹 Raw String Solution
+R"(Line1\nLine2)"
+
+Now \n is treated literally.
+
+🔹 Example
+#include <iostream>
+using namespace std;
+
+int main() {
+    string s = R"(This is a raw string.
+No escape characters here.
+\ n is printed as it is.)";
+
+    cout << s;
+}
+📌 Summary of Module 48
+Feature	Purpose
+constexpr	Compile-time computation
+noexcept	Guarantee no exception
+nullptr	Safe null pointer
+Inline Namespace	Library version control
+User Defined Literals	Custom literals
+Raw String	Disable escape characters
+🎯 What You Should Practice
+
+Write constexpr functions
+
+Create your own _km, _min, _hr literal
+
+Create versioned namespace
+
+Practice function overloading with nullptr
+
+Write template with conditional noexcept
+
+(section wise divide into html and css note)
+
