@@ -1,9 +1,9 @@
 #include <bits/stdc++.h>
+#include "Controller/BankingController.h"
+
 using namespace std;
 
 int main() {
-
-    
-
-    return 0;
+    BankingController controller;
+    controller.start();
 }

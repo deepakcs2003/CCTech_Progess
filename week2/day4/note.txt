@@ -346,3 +346,300 @@ Write template with conditional noexcept
 
 (section wise divide into html and css note)
 
+1️⃣ First Understand the Real Problem
+
+Without virtual function:
+
+class Base {
+public:
+    void show() {
+        cout << "Base\n";
+    }
+};
+
+class Derived : public Base {
+public:
+    void show() {
+        cout << "Derived\n";
+    }
+};
+
+int main() {
+    Base* ptr = new Derived();
+    ptr->show();
+}
+What will print?
+
+👉 Base
+
+Why?
+
+Because function call depends on pointer type
+Pointer type = Base*
+So Base::show() is called.
+
+This is called:
+
+Compile Time Binding (Static Binding)
+
+🔹 2️⃣ Now Add Virtual
+class Base {
+public:
+    virtual void show() {
+        cout << "Base\n";
+    }
+};
+
+Now output will be:
+
+👉 Derived
+
+Why?
+
+Because now function call depends on object type, not pointer type.
+
+This is:
+
+Runtime Polymorphism
+Dynamic Binding
+
+🔹 3️⃣ HOW DOES THIS HAPPEN INTERNALLY?
+
+Now comes the real magic.
+
+Compiler secretly creates:
+
+vTable (per class)
+
+vPtr (per object)
+
+🔹 4️⃣ What Exactly Is vTable?
+
+Think of vTable as:
+
+📦 A box containing function addresses.
+
+Example:
+
+Base has 3 virtual functions:
+
+function1()
+function2()
+function3()
+
+Compiler makes something like:
+
+Base vTable:
+
+Index	Address
+0	Base::function1
+1	Base::function2
+2	Base::function3
+🔹 5️⃣ What Is vPtr?
+
+Now when object is created:
+
+Base obj;
+
+Memory looks like:
+
+-------------------
+| vPtr            | ----> points to Base vTable
+-------------------
+| data members    |
+-------------------
+
+⚠ You cannot see vPtr in code.
+Compiler adds it secretly.
+
+🔹 6️⃣ Now Let’s Understand Your Big Example Slowly
+
+You have:
+
+Base
+Derived1
+Derived2
+
+🔹 Base vTable
+
+Base has 3 virtual functions.
+
+So Base vTable:
+
+| 0 | Base::function1 |
+| 1 | Base::function2 |
+| 2 | Base::function3 |
+
+🔹 Derived1
+
+Derived1 overrides only function1.
+
+So Derived1 vTable becomes:
+
+| 0 | Derived1::function1 |
+| 1 | Base::function2 |
+| 2 | Base::function3 |
+
+Only first entry changed.
+
+🔹 Derived2
+
+Derived2 overrides function2.
+
+So Derived2 vTable becomes:
+
+| 0 | Derived1::function1 |
+| 1 | Derived2::function2 |
+| 2 | Base::function3 |
+
+See carefully:
+
+function1 → comes from Derived1
+function2 → comes from Derived2
+function3 → still Base
+
+🔹 7️⃣ Now Understand This Line Very Carefully
+Base* ptr3 = new Derived2();
+
+Important:
+
+Pointer type = Base
+Object type = Derived2
+
+Now when object is created:
+
+Memory:
+
+-------------------
+| vPtr            | ----> points to Derived2 vTable
+-------------------
+| Base part       |
+| Derived1 part   |
+| Derived2 part   |
+-------------------
+
+vPtr points to Derived2 table.
+
+🔹 8️⃣ When You Call
+ptr3->function2();
+
+What happens internally:
+
+Step 1 → compiler sees function is virtual
+Step 2 → go to object
+Step 3 → read vPtr
+Step 4 → go to Derived2 vTable
+Step 5 → call entry at index 1
+Step 6 → Derived2::function2() runs
+
+That’s it.
+
+This is Runtime Polymorphism.
+
+🔹 9️⃣ Why vTable Is Needed?
+
+Because at compile time, compiler only knows:
+
+Base* ptr
+
+It does NOT know:
+
+Is object Base?
+Is object Derived1?
+Is object Derived2?
+
+So decision is delayed until runtime.
+
+🔥 10️⃣ Very Important: Virtual Destructor
+
+Now most important concept.
+
+Look at this:
+
+base *b = new derived();
+delete b;
+
+If destructor is NOT virtual:
+
+Only base destructor runs.
+
+Derived destructor does NOT run.
+
+This is dangerous.
+
+🔹 Why Dangerous?
+
+Imagine:
+
+class derived {
+    int* ptr;
+public:
+    derived() {
+        ptr = new int[100];
+    }
+    ~derived() {
+        delete[] ptr;
+    }
+};
+
+If derived destructor does not run:
+
+Memory is never freed.
+
+💥 Memory leak.
+
+🔹 Why Destructor Must Be Virtual?
+
+When destructor is virtual:
+
+Compiler also puts destructor in vTable.
+
+Now when:
+
+delete b;
+
+It checks vPtr → goes to correct destructor → calls:
+
+Derived destructor
+
+Base destructor
+
+Correct order.
+
+🔥 Golden Rule (Very Important)
+
+If class has ANY virtual function:
+
+👉 Always make destructor virtual.
+
+Even if it is empty.
+
+🔹 11️⃣ Interview Important Points
+
+✔ vTable is created per class
+✔ vPtr is created per object
+✔ Only classes with virtual functions have vPtr
+✔ Dynamic binding happens using vPtr
+✔ Virtual destructor prevents memory leak
+✔ vTable mechanism is compiler implementation detail
+
+🔹 12️⃣ One More Deep Concept
+
+If no virtual function:
+
+Object memory:
+
+| data |
+
+If virtual function exists:
+
+| vPtr | data |
+
+So object size increases by pointer size (usually 8 bytes).
+
+🔥 Final Super Simple Summary
+
+vTable = table of virtual functions
+vPtr = pointer inside object pointing to vTable
+Used for = runtime polymorphism
+Destructor must be virtual = yes always
